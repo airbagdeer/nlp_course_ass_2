@@ -388,9 +388,7 @@ Describe your approach in the report, and submit your predictions over the test 
 
 #### Training, validation (dev) and test data
 
-The training, validation (dev) and test data are in the `ner.tgz` file.
-
-  * [ner.tgz](https://github.com/yoavg/nlp2024-2025/releases/download/ass2-data/ner.tgz)
+The training, validation (dev) and test data are in the `data-ner` directory.
 
 The format uses the **BIO encoding** for spans.
 
@@ -402,7 +400,7 @@ Your evaluation metrics in this part should be **precision**, **recall** and **F
   * **recall** is computed as the number of correctly predicted spans, divided by the number of all gold spans.
   * **F1** is the harmonic mean of precision and recall: $2 \times (\text{precision} \times \text{recall}) / (\text{precision} + \text{recall})$.
 
-You can perform span-level evaluation using the [ner\_eval.py](https://www.google.com/search?q=/nlp2025-2026/ass2/ner_eval.py) script, which should be run as:
+You can perform span-level evaluation using the `ner_eval.py` script, which should be run as:
 
 ```
 python ner_eval.py gold_file predicted_file

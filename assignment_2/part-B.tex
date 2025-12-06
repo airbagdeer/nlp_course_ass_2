@@ -1,0 +1,46 @@
+\documentclass{article}
+\usepackage{geometry}
+\usepackage{hyperref}
+
+\title{}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Part B.2}
+
+\subsection*{Approach}
+We implemented a Nearest Neighbor approach using RoBERTa embeddings. Since training a classifier was not allowed, we used roberta-base to extract contextualized embeddings and performed similarity search against a memory bank of training examples.
+
+\subsubsection*{Memory Bank Construction (Training)}
+We passed all training sentences through roberta-base. Then for each named entity (Tag != `O'), we stored its embedding (first subword token) and its tag in a ``Memory Bank''.
+To handle unknown non-entities, we also stored a random sample (10\%) of `O' tags in the Memory Bank.
+
+\subsubsection*{Prediction}
+For each word in the test/dev set:
+\begin{itemize}
+    \item \textbf{Known Words}: If the word was seen in the training data, we simply assign the tag most frequently associated with the word in the training data, as we found that it is reliable for known entities.
+    \item \textbf{Unknown Words}: First, we extract the contextualized embedding of the word using roberta-base. Then, we calculate the Cosine Similarity between this embedding and all embeddings in the Memory Bank. Finally, we assigned the tag of the nearest neighbor (highest similarity). For example, if the nearest neighbor was an `O' sample, the prediction was `O'.
+\end{itemize}
+
+\subsection*{Results (Dev Set)}
+
+\begin{itemize}
+    \item \textbf{Accuracy}: 95.7\%
+    \item \textbf{Precision}: 70.6\%
+    \item \textbf{Recall}: 81.2\%
+    \item \textbf{F1 Score}: 75.5\%
+\end{itemize}
+
+\subsubsection*{Breakdown by Type}
+\begin{itemize}
+    \item \textbf{PER}: Excellent recall (89.4\%) and good precision (81.6\%).
+    \item \textbf{LOC}: Strong performance (P: 77.8\%, R: 84.5\%).
+    \item \textbf{ORG}: Hardest category (P: 55.8\%, R: 71.1\%).
+    \item \textbf{MISC}: Reasonable performance (P: 60.3\%, R: 72.9\%).
+\end{itemize}
+
+\end{document}

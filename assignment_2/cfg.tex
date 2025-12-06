@@ -2,7 +2,7 @@
 \usepackage{graphicx} % Required for inserting images
 
 \title{NLP Course}
-\author{324827328}
+\author{324827328, 038105045}
 \date{}
 
 \begin{document}
@@ -28,9 +28,9 @@ To generate an adjective, we must choose the following rule to continue from nou
 Which means we only have a $\frac{1}{6}$ probability of choosing the rule "1	Noun	Adj Noun". As a result, we dont have much adjectives.
 
 \subsubsection*{Which numbers must you modify to fix the problems in (1) and (2), making the sentences shorter and the adjectives more frequent?}
-\textbf{To make the sentences shorter} we mainly lower the recursive \texttt{NP $\to$ NP PP} weight (to $0.1$) and boost the base NP rule (\texttt{NP $\to$ Det Noun} to $10$), so expansions terminate instead of chaining PPs. Raising terminal-preterminal weights (e.g., common Verbs/Det/Nouns) also helps end derivations faster but the key change is dampening the recursive PP attachment.
+To make the sentences shorter we mainly lower the recursive \texttt{NP $\to$ NP PP} weight (to $0.1$) and boost the base NP rule (\texttt{NP $\to$ Det Noun} to $10$), so expansions terminate instead of chaining PPs. Raising terminal-preterminal weights (e.g., common Verbs/Det/Nouns) also helps end derivations faster but the key change is dampening the recursive PP attachment.
 
-\textbf{To make adjectives more likely} we raise the adjectival recursion weight \texttt{Noun $\to$ Adj Noun} (to $20$) so modifiers are favored over bare noun choices; adjectival lexicon weights stay balanced.
+To make adjectives more likely we raise the adjectival recursion weight \texttt{Noun $\to$ Adj Noun} (to $20$) so modifiers are favored over bare noun choices; adjectival lexicon weights stay balanced.
 
 
 \subsubsection*{What other numeric adjustments can you make to the grammar in order to favor a set of more natural sentences? Experiment and discuss.}
@@ -63,8 +63,7 @@ We can do the following:
 
 \section*{Part A.2}
 \subsection*{Modifications to the Grammar}
-I modified the grammar to support the required sentences (1)-(10) by adding new vocabulary and rules.
-Key changes include:
+We modified the grammar to support the required sentences with the following changes:
 \begin{itemize}
     \item Separated verbs into subcategories: VerbT (transitive), VerbI (intransitive), VerbThat (sentential complement), Copula (is), VerbPerplex (specific for "it perplexed...").
     \item Added coordination rules for NPs (NP $\to$ NP Conj NP) and VPs (VP $\to$ VP Conj VP).
@@ -82,23 +81,23 @@ For example, if we simply classified "wanted", "ate", and "is" all as Verb, and 
 \end{quote}
 Here, "wanted" requires an NP object, while "is" in this context takes an Adjective. Coordinating them creates a mismatch where "lazy" cannot serve as the object for "wanted".
 Similarly, "Sally wanted and sighed a sandwich" would be generated if we coordinated transitive and intransitive verbs.
-To avoid this, my grammar distinguishes between VerbT, VerbI, and Copula, and only allows coordination between compatible types (e.g., VerbT with VerbT).
+To avoid this, our grammar distinguishes between VerbT, VerbI, and Copula, and only allows coordination between compatible types (e.g., VerbT with VerbT).
 
 
 \section*{Part A.4}
 \subsection*{Extensions to the Grammar}
-I extended the grammar to handle two additional linguistic phenomena:
+We extended the grammar to handle two additional linguistic phenomena:
 \begin{enumerate}
-    \item \textbf{(e) Singular vs. plural agreement}
-    \item \textbf{(b) Yes-no questions}
+    \item (e) Singular vs. plural agreement
+    \item (b) Yes-no questions
 \end{enumerate}
 
 \subsection*{Singular vs. Plural Agreement}
-To handle agreement, I split the relevant categories into Singular (Sg) and Plural (Pl) variants:
+To handle agreement, we split the relevant categories into Singular (Sg) and Plural (Pl) variants:
 \begin{itemize}
-    \item \textbf{Nouns and NPs}: Split into \texttt{NounSg}, \texttt{NounPl}, \texttt{NPSg}, and \texttt{NPPl}.
-    \item \textbf{Verbs and VPs}: Split into \texttt{VerbTSg/Pl}, \texttt{VerbISg/Pl}, \texttt{CopulaSg/Pl}, etc.
-    \item \textbf{Sentence Structure}: The \texttt{S} rule enforces agreement:
+    \item Nouns and NPs: Split into \texttt{NounSg}, \texttt{NounPl}, \texttt{NPSg}, and \texttt{NPPl}.
+    \item Verbs and VPs: Split into \texttt{VerbTSg/Pl}, \texttt{VerbISg/Pl}, \texttt{CopulaSg/Pl}, etc.
+    \item Sentence Structure: The \texttt{S} rule enforces agreement:
     \begin{itemize}
         \item \texttt{S} $\to$ \texttt{NPSg} \texttt{VPSg}
         \item \texttt{S} $\to$ \texttt{NPPl} \texttt{VPPl}
@@ -107,11 +106,11 @@ To handle agreement, I split the relevant categories into Singular (Sg) and Plur
 This ensures that "the president eats" (Sg-Sg) and "the presidents eat" (Pl-Pl) are generated, while "*the president eat" is blocked.
 
 \subsection*{Yes-No Questions}
-I added support for Yes-No questions using two strategies:
+We added support for Yes-No questions using two strategies:
 \begin{enumerate}
-    \item \textbf{Auxiliary Support}: \texttt{do/does/did/will} plus an uninflected \texttt{VPBase} (\texttt{ROOT} $\to$ \texttt{Aux} \texttt{NP} \texttt{VPBase} ?). \texttt{VPBase} excludes copular be, so we avoid ungrammatical forms like ``does the president be...''.
-    \item \textbf{Copula Inversion}: Dedicated rules invert the copula directly (\texttt{ROOT} $\to$ \texttt{CopulaSg/Pl} \texttt{NP} \texttt{Adj/NP/VPing/PP} ?), yielding ``Is the president lazy?'' / ``Are the presidents eating?'' without do-support.
+    \item Auxiliary Support: \texttt{do/does/did/will} plus an uninflected \texttt{VPBase} (\texttt{ROOT} $\to$ \texttt{Aux} \texttt{NP} \texttt{VPBase} ?). \texttt{VPBase} excludes copular be, so we avoid ungrammatical forms like ``does the president be...''.
+    \item Copula Inversion: Dedicated rules invert the copula directly (\texttt{ROOT} $\to$ \texttt{CopulaSg/Pl} \texttt{NP} \texttt{Adj/NP/VPing/PP} ?), yielding ``Is the president lazy?'' / ``Are the presidents eating?'' without do-support.
 \end{enumerate}
-For progressives, I split \texttt{VerbIng} into transitive and intransitive forms so \texttt{VPing} requires an object only when the verb subcategorizes for one, preventing frames like ``was the sandwich eating ?''.
+For progressives, we split \texttt{VerbIng} into transitive and intransitive forms so \texttt{VPing} requires an object only when the verb subcategorizes for one, preventing frames like ``was the sandwich eating ?''.
 
 \end{document}
