@@ -88,15 +88,12 @@
 5	VPBase	VerbThatBase That S
 5	VPBase	VerbPerplexBase NP That S
 5	VPBase	VerbPerplexBase NP
-5	VPBase	CopulaBase Adj
-5	VPBase	CopulaBase NP
-5	VPBase	CopulaBase VPing
 2	VPBase	VPBase PP
 1	VPBase	VPBase Conj VPBase
 
 # VPing (Progressive) - same for both
-1	VPing	VerbIng NP
-1	VPing	VerbIng
+1	VPing	VerbIngT NP
+1	VPing	VerbIngI
 
 # NP Rules - Split into Sg and Pl
 # Singular NP
@@ -207,9 +204,9 @@
 10	CopulaBase	be
 
 # Progressive
-10	VerbIng	eating
-10	VerbIng	working
-10	VerbIng	sighing
+10	VerbIngT	eating
+10	VerbIngI	working
+10	VerbIngI	sighing
 
 # Auxiliaries
 10	AuxSg	does
@@ -222,6 +219,7 @@
 25	DetSg	a
 10	DetSg	every
 # No specific plural determiners in original, but we can assume 'the' covers it.
+# Maybe "all"?
 5	DetPl	all
 5	DetPl	many
 
@@ -247,6 +245,7 @@
 
 # Proper Nouns (Singular)
 20	ProperNoun	Sally
+10	ProperNoun	sally
 
 # Adjectives
 1	Adj	fine
