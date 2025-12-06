@@ -1,0 +1,72 @@
+# Symbols in the grammar are case-sensitive.
+# 
+# This grammar uses a convention that
+#    - terminals are lowercase          (president)
+#    - preterminals are capitalized     (Noun)
+#    - other nonterminals are all-caps  (NP)
+# 
+# This convention just makes grammars more readable to humans.  Thus:
+#
+#    - When *you* are writing grammars, you should 
+#      follow this convention unless you have a good reason not to.  
+#
+#    - But the  *program* should still work with grammars that don't
+#      follow this convention.  So how can the program reliably tell
+#      the difference between terminal and nonterminal symbols?  If
+#      there is at least one rule for rewriting a symbol, then that
+#      symbol is a nonterminal and should be rewritten.
+#######################
+
+# Rules for creating full sentences.
+
+10	ROOT	S .
+1	ROOT	S !
+0.5	ROOT	is it true that S ?     # mixing terminals and nonterminals is ok.
+
+# The basic grammar rules.  Here's what the abbreviations stand for:
+#    S  = sentence
+#    NP = noun phrase
+#    VP = verb phrase
+#    PP = prepositional phrase
+#    Det = determiner (sometimes called "article")
+#    Prep = preposition
+#    Adj = adjective
+
+1	S	NP VP
+0.1	VP	Verb NP
+10	NP	Det Noun
+0.1	NP	NP PP
+0.1	PP	Prep NP
+20	Noun	Adj Noun
+
+# Vocabulary.  Your program can see that "ate" is a terminal
+# symbol because there exists no rule for rewriting it.
+# Any symbol that can rewrite as a terminal (or a string of 
+# terminals, like "chief of staff") is called a "preterminal."  Notice 
+# that a preterminal is a special kind of nonterminal.
+
+8	Verb	ate
+8	Verb	wanted
+5	Verb	kissed
+2	Verb	understood
+0.1	Verb	pickled
+
+50	Det	the
+25	Det	a
+5	Det	every
+
+10	Noun	president
+5	Noun	sandwich
+1	Noun	pickle
+10	Noun	chief of staff
+5	Noun	floor
+
+3	Adj	fine
+3	Adj	delicious
+1	Adj	perplexed
+1	Adj	pickled
+
+5	Prep	with
+5	Prep	on
+5	Prep	under
+5	Prep	in

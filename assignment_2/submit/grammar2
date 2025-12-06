@@ -1,0 +1,125 @@
+# Symbols in the grammar are case-sensitive.
+# 
+# This grammar uses a convention that
+#    - terminals are lowercase          (president)
+#    - preterminals are capitalized     (Noun)
+#    - other nonterminals are all-caps  (NP)
+# 
+# This convention just makes grammars more readable to humans.  Thus:
+#
+#    - When *you* are writing grammars, you should 
+#      follow this convention unless you have a good reason not to.  
+#
+#    - But the  *program* should still work with grammars that don't
+#      follow this convention.  So how can the program reliably tell
+#      the difference between terminal and nonterminal symbols?  If
+#      there is at least one rule for rewriting a symbol, then that
+#      symbol is a nonterminal and should be rewritten.
+#######################
+
+# Rules for creating full sentences.
+
+10	ROOT	S .
+1	ROOT	S !
+0.5	ROOT	is it true that S ?     # mixing terminals and nonterminals is ok.
+
+# The basic grammar rules.  Here's what the abbreviations stand for:
+#    S  = sentence
+#    NP = noun phrase
+#    VP = verb phrase
+#    PP = prepositional phrase
+#    Det = determiner (sometimes called "article")
+#    Prep = preposition
+#    Adj = adjective
+
+10	S	NP VP
+2	S	It VerbPerplex NP That S
+
+10	VP	VerbT NP
+5	VP	VerbI
+5	VP	VerbThat That S
+5	VP	Copula Adj
+5	VP	Copula NP
+5	VP	Copula VPing
+2	VP	VP PP
+1	VP	VP Conj VP
+
+1	VPing	VerbIng NP
+
+20	NP	Det Noun
+10	NP	ProperNoun
+2	NP	NP PP
+2	NP	NP Conj NP
+
+1	PP	Prep NP
+
+20	Noun	Adj Noun
+
+5	Adj	Adv Adj
+
+1	VerbT	VerbT Conj VerbT
+
+# Vocabulary.  Your program can see that "ate" is a terminal
+# symbol because there exists no rule for rewriting it.
+# Any symbol that can rewrite as a terminal (or a string of 
+# terminals, like "chief of staff") is called a "preterminal."  Notice 
+# that a preterminal is a special kind of nonterminal.
+
+# Verbs
+20	VerbT	ate
+20	VerbT	wanted
+1	VerbT	kissed
+1	VerbT	understood
+0.1	VerbT	pickled
+
+10	VerbI	sighed
+10	VerbI	worked
+
+10	VerbThat	thought
+
+10	VerbPerplex	perplexed
+
+10	Copula	is
+
+10	VerbIng	eating
+
+# Determiners
+50	Det	the
+25	Det	a
+10	Det	every
+
+# Nouns
+20	Noun	president
+20	Noun	sandwich
+1	Noun	pickle
+1	Noun	chief of staff
+1	Noun	floor
+10	Noun	proposal
+10	Noun	desk
+
+# Proper Nouns
+20	ProperNoun	Sally
+
+# Adjectives
+1	Adj	fine
+1	Adj	delicious
+10	Adj	perplexed
+0.1	Adj	pickled
+10	Adj	lazy
+
+# Adverbs
+10	Adv	very
+
+# Prepositions
+1	Prep	with
+20	Prep	on
+1	Prep	under
+1	Prep	in
+1	Prep	of
+
+# Conjunctions
+10	Conj	and
+
+# Functional
+10	It	it
+10	That	that

@@ -1,0 +1,168 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{NLP Course}
+\author{324827328}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Part A.1}
+\subsection*{Why does the program generate so many long sentences? Specifically, what grammar rule is responsible for that and why? What is special about this rule? discuss.}
+
+Because the program is recursive, and there is a high probability from the rules to keep the recursion going, some sentences become quite long. This happens specifically because of the rules:
+\begin{enumerate}
+    \item 1	VP	Verb NP
+    \item 1	NP	NP PP
+    \item 1	PP	Prep NP
+\end{enumerate}
+
+\subsection*{The grammar allows multiple adjectives, as in: “the fine perplexed pickle”. Why do the generated sentences show this so rarely? discuss.}
+To generate an adjective, we must choose the following rule to continue from noun "1	Noun	Adj Noun", but this rule is equally distributed with the following rules:
+\begin{enumerate}
+    \item 1	Noun	Adj Noun (the rule we want)
+    \item 1	Noun	president
+    \item 1	Noun	sandwich
+    \item 1	Noun	pickle
+    \item 1	Noun	chief of staff
+    \item 1	Noun	floor
+\end{enumerate}
+
+Which means we only have a $\frac{1}{6}$ probability of choosing the rule "1	Noun	Adj Noun". As a result, we dont have much adjectives.
+
+\subsubsection*{Which numbers must you modify to fix the problems in (1) and (2), making the sentences shorter and the adjectives more frequent?}
+\textbf{To make the sentences shorter}, we need two things, first increase the probabilities of rules that end with a terminal, for example, if we change the following rules:
+\begin{enumerate}
+    \item 1	Verb	ate
+    \item 1	Det	the
+    \item 1	Noun	president
+    \item 1	Adj	fine
+    \item 1	Prep	with
+\end{enumerate}
+
+to:
+
+\begin{enumerate}
+    \item 10	Verb	ate
+    \item 10	Det	the
+    \item 10	Noun	president
+    \item 10	Adj	fine
+    \item 10	Prep	with
+\end{enumerate}
+
+Then we will have a much higher probability with ending with a terminal.
+
+Secondly, we will decrease the rules that cause the recursion to go on and on, meaning the following rules:
+
+\begin{enumerate}
+    \item 1	VP	Verb NP
+    \item 1	NP	NP PP
+    \item 1	PP	Prep NP
+\end{enumerate}
+
+Might be decreased to this weights:
+
+\begin{enumerate}
+    \item 0.1	VP	Verb NP
+    \item 0.1	NP	NP PP
+    \item 0.1	PP	Prep NP
+\end{enumerate}
+
+We can also increase the weight that help stop the recursion, for example the following rule "1	NP	Det Noun" can be increased to "10	NP	Det Noun"
+
+\textbf{To make adjectives more likly to appear} we need to make the following rule "1	Noun	Adj Noun" more likly, so we can increase its weight to "20	Noun	Adj Noun".
+
+
+\subsubsection*{What other numeric adjustments can you make to the grammar in order to favor a set of more natural sentences? Experiment and discuss.}
+
+We can do the following:
+
+\begin{enumerate}
+    \item We can increase the weights for "the" and "a" dramatically compared to "every.". "The" is the most common word in the English language, making it far more "natural" to see it often in generated sentences than "every.". Overall we change the following rules:
+    \begin{enumerate}
+        \item 50	Det	the
+        \item 25	Det	a
+        \item 5	Det	every
+    \end{enumerate}
+    \item We can try adjusting sentence structures (ROOT). simple declarative statements (S .) are much more common than exclamations or complex questions. We make the following changes:
+    \begin{enumerate}
+        \item 10	ROOT	S .
+        \item 1	ROOT	S !
+        \item 0.5	ROOT	is it true that S ? 
+    \end{enumerate}
+    \item We can try favoring common Verbs. We make the following changes:
+    \begin{enumerate}
+        \item 8	Verb	ate
+        \item 8	Verb	wanted
+        \item 5	Verb	kissed
+        \item 2	Verb	understood
+        \item 0.1	Verb	pickled
+    \end{enumerate}
+\end{enumerate}
+
+
+\section*{Part A.2}
+\subsection*{Modifications to the Grammar}
+I modified the grammar to support the required sentences (1)-(10) by adding new vocabulary and rules.
+Key changes include:
+\begin{itemize}
+    \item Separated verbs into subcategories: VerbT (transitive), VerbI (intransitive), VerbThat (sentential complement), Copula (is), VerbPerplex (specific for "it perplexed...").
+    \item Added coordination rules for NPs (NP $\to$ NP Conj NP) and VPs (VP $\to$ VP Conj VP).
+    \item Added a specific rule for transitive verb coordination (VerbT $\to$ VerbT Conj VerbT) to handle "wanted and ate a sandwich".
+    \item Added support for "It-cleft" structures like "it perplexed NP that S".
+    \item Added recursive adjective modification (Adj $\to$ Adv Adj).
+\end{itemize}
+
+\subsection*{Interaction between Conjunctions and Copula/Progressive}
+Handling sentences like (2) "Sally and the president wanted and ate a sandwich" and (8)/(9) "Sally is lazy" / "Sally is eating a sandwich" can be problematic if categories are not strictly defined.
+For example, if we simply classified "wanted", "ate", and "is" all as Verb, and allowed Verb $\to$ Verb and Verb, we might generate ungrammatical sentences like:
+
+\begin{quote}
+    * Sally wanted and is lazy.
+\end{quote}
+Here, "wanted" requires an NP object, while "is" in this context takes an Adjective. Coordinating them creates a mismatch where "lazy" cannot serve as the object for "wanted".
+Similarly, "Sally wanted and sighed a sandwich" would be generated if we coordinated transitive and intransitive verbs.
+To avoid this, my grammar distinguishes between VerbT, VerbI, and Copula, and only allows coordination between compatible types (e.g., VerbT with VerbT).
+
+
+\section*{Part A.4}
+\subsection*{Extensions to the Grammar}
+I extended the grammar to handle two additional linguistic phenomena:
+\begin{enumerate}
+    \item \textbf{(e) Singular vs. plural agreement}
+    \item \textbf{(b) Yes-no questions}
+\end{enumerate}
+
+\subsection*{Singular vs. Plural Agreement}
+To handle agreement, I split the relevant categories into Singular (Sg) and Plural (Pl) variants:
+\begin{itemize}
+    \item \textbf{Nouns and NPs}: Split into \texttt{NounSg}, \texttt{NounPl}, \texttt{NPSg}, and \texttt{NPPl}.
+    \item \textbf{Verbs and VPs}: Split into \texttt{VerbTSg/Pl}, \texttt{VerbISg/Pl}, \texttt{CopulaSg/Pl}, etc.
+    \item \textbf{Sentence Structure}: The \texttt{S} rule enforces agreement:
+    \begin{itemize}
+        \item \texttt{S} $\to$ \texttt{NPSg} \texttt{VPSg}
+        \item \texttt{S} $\to$ \texttt{NPPl} \texttt{VPPl}
+    \end{itemize}
+\end{itemize}
+This ensures that "the president eats" (Sg-Sg) and "the presidents eat" (Pl-Pl) are generated, while "*the president eat" is blocked.
+
+\subsection*{Yes-No Questions}
+I added support for Yes-No questions using two strategies:
+\begin{enumerate}
+    \item \textbf{Auxiliary Support}: Added rules for "Do/Does/Did/Will" questions.
+    \begin{itemize}
+        \item \texttt{ROOT} $\to$ \texttt{AuxSg} \texttt{NPSg} \texttt{VPBase} ? (e.g., "Does the president eat?")
+        \item \texttt{ROOT} $\to$ \texttt{AuxPl} \texttt{NPPl} \texttt{VPBase} ? (e.g., "Do the presidents eat?")
+        \item \texttt{ROOT} $\to$ \texttt{AuxPast} \texttt{NP} \texttt{VPBase} ? (e.g., "Did the president eat?")
+    \end{itemize}
+    Note the use of \texttt{VPBase} (uninflected verb phrase) after the auxiliary.
+    \item \textbf{Copula Inversion}: Added rules for inverting the copula "be".
+    \begin{itemize}
+        \item \texttt{ROOT} $\to$ \texttt{CopulaSg} \texttt{NPSg} \texttt{Adj} ? (e.g., "Is the president lazy?")
+        \item \texttt{ROOT} $\to$ \texttt{CopulaPl} \texttt{NPPl} \texttt{Adj} ? (e.g., "Are the presidents lazy?")
+    \end{itemize}
+\end{enumerate}
+
+\end{document}

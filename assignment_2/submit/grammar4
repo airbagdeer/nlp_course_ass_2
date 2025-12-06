@@ -1,0 +1,273 @@
+# b e
+# Symbols in the grammar are case-sensitive.
+# 
+# This grammar uses a convention that
+#    - terminals are lowercase          (president)
+#    - preterminals are capitalized     (Noun)
+#    - other nonterminals are all-caps  (NP)
+# 
+# This convention just makes grammars more readable to humans.  Thus:
+#
+#    - When *you* are writing grammars, you should 
+#      follow this convention unless you have a good reason not to.  
+#
+#    - But the  *program* should still work with grammars that don't
+#      follow this convention.  So how can the program reliably tell
+#      the difference between terminal and nonterminal symbols?  If
+#      there is at least one rule for rewriting a symbol, then that
+#      symbol is a nonterminal and should be rewritten.
+#######################
+
+# Rules for creating full sentences.
+
+10	ROOT	S .
+1	ROOT	S !
+0.5	ROOT	is it true that S ?     # mixing terminals and nonterminals is ok.
+
+# Yes-No Questions (b)
+# Questions with Auxiliaries (Do/Does/Did/Will)
+2	ROOT	AuxSg NPSg VPBase ?
+2	ROOT	AuxPl NPPl VPBase ?
+2	ROOT	AuxPast NP VPBase ?
+2	ROOT	AuxFut NP VPBase ?
+
+# Questions with Copula (Is/Are/Was/Were) - Inversion
+2	ROOT	CopulaSg NPSg Adj ?
+2	ROOT	CopulaPl NPPl Adj ?
+2	ROOT	CopulaSg NPSg NP ?
+2	ROOT	CopulaPl NPPl NP ?
+2	ROOT	CopulaSg NPSg VPing ?
+2	ROOT	CopulaPl NPPl VPing ?
+2	ROOT	CopulaSg NPSg PP ?
+2	ROOT	CopulaPl NPPl PP ?
+
+
+# The basic grammar rules.  Here's what the abbreviations stand for:
+#    S  = sentence
+#    NP = noun phrase
+#    VP = verb phrase
+#    PP = prepositional phrase
+#    Det = determiner (sometimes called "article")
+#    Prep = preposition
+#    Adj = adjective
+
+# S rules with Agreement (e)
+10	S	NPSg VPSg
+10	S	NPPl VPPl
+2	S	It VerbPerplexSg NP That S
+# "It" is singular, so it takes singular verb
+
+# VP Rules - Split into Sg and Pl
+# Singular VP
+10	VPSg	VerbTSg NP
+5	VPSg	VerbISg
+5	VPSg	VerbThatSg That S
+5	VPSg	VerbPerplexSg NP That S
+5	VPSg	VerbPerplexSg NP
+5	VPSg	CopulaSg Adj
+5	VPSg	CopulaSg NP
+5	VPSg	CopulaSg VPing
+2	VPSg	VPSg PP
+1	VPSg	VPSg Conj VPSg
+
+# Plural VP
+10	VPPl	VerbTPl NP
+5	VPPl	VerbIPl
+5	VPPl	VerbThatPl That S
+5	VPPl	VerbPerplexPl NP That S
+5	VPPl	VerbPerplexPl NP
+5	VPPl	CopulaPl Adj
+5	VPPl	CopulaPl NP
+5	VPPl	CopulaPl VPing
+2	VPPl	VPPl PP
+1	VPPl	VPPl Conj VPPl
+
+# Base VP (for questions with Aux)
+10	VPBase	VerbTBase NP
+5	VPBase	VerbIBase
+5	VPBase	VerbThatBase That S
+5	VPBase	VerbPerplexBase NP That S
+5	VPBase	VerbPerplexBase NP
+5	VPBase	CopulaBase Adj
+5	VPBase	CopulaBase NP
+5	VPBase	CopulaBase VPing
+2	VPBase	VPBase PP
+1	VPBase	VPBase Conj VPBase
+
+# VPing (Progressive) - same for both
+1	VPing	VerbIng NP
+1	VPing	VerbIng
+
+# NP Rules - Split into Sg and Pl
+# Singular NP
+20	NPSg	DetSg NounSg
+20	NPSg	DetAll NounSg
+10	NPSg	ProperNoun
+2	NPSg	NPSg PP
+# 2	NPSg	NPSg Conj NPSg  # Removed: Sg and Sg = Pl
+
+# Plural NP
+20	NPPl	DetPl NounPl
+20	NPPl	DetAll NounPl
+5	NPPl	NounPl  # Bare plurals
+2	NPPl	NPPl PP
+2	NPPl	NPPl Conj NPPl
+2	NPPl	NPSg Conj NPSg
+2	NPPl	NPSg Conj NPPl
+2	NPPl	NPPl Conj NPSg
+
+# Generic NP (for places where number doesn't matter, e.g. object of transitive verb)
+# Actually, for object of transitive verb, it can be either Sg or Pl.
+# So we define NP as union of NPSg and NPPl
+1	NP	NPSg
+1	NP	NPPl
+
+1	PP	Prep NP
+
+# Noun Rules
+20	NounSg	Adj NounSg
+20	NounPl	Adj NounPl
+
+5	Adj	Adv Adj
+
+# Verb Coordination
+1	VerbTSg	VerbTSg Conj VerbTSg
+1	VerbTPl	VerbTPl Conj VerbTPl
+1	VerbTBase	VerbTBase Conj VerbTBase
+
+# Vocabulary
+
+# Verbs
+# Transitive
+20	VerbTSg	eats
+20	VerbTSg	wants
+1	VerbTSg	kisses
+1	VerbTSg	understands
+0.1	VerbTSg	pickles
+# Past Tense (works for Sg)
+20	VerbTSg	ate
+20	VerbTSg	wanted
+1	VerbTSg	kissed
+1	VerbTSg	understood
+0.1	VerbTSg	pickled
+
+20	VerbTPl	eat
+20	VerbTPl	want
+1	VerbTPl	kiss
+1	VerbTPl	understand
+0.1	VerbTPl	pickle
+# Past Tense (works for Pl)
+20	VerbTPl	ate
+20	VerbTPl	wanted
+1	VerbTPl	kissed
+1	VerbTPl	understood
+0.1	VerbTPl	pickled
+
+20	VerbTBase	eat
+20	VerbTBase	want
+1	VerbTBase	kiss
+1	VerbTBase	understand
+0.1	VerbTBase	pickle
+
+# Intransitive
+10	VerbISg	sighs
+10	VerbISg	works
+# Past Tense
+10	VerbISg	sighed
+10	VerbISg	worked
+
+10	VerbIPl	sigh
+10	VerbIPl	work
+# Past Tense
+10	VerbIPl	sighed
+10	VerbIPl	worked
+
+10	VerbIBase	sigh
+10	VerbIBase	work
+
+# Sentential Complement
+10	VerbThatSg	thinks
+10	VerbThatSg	thought
+10	VerbThatPl	think
+10	VerbThatPl	thought
+10	VerbThatBase	think
+
+# Perplex
+10	VerbPerplexSg	perplexes
+10	VerbPerplexSg	perplexed
+10	VerbPerplexPl	perplex
+10	VerbPerplexPl	perplexed
+10	VerbPerplexBase	perplex
+
+# Copula
+10	CopulaSg	is
+10	CopulaSg	was
+10	CopulaPl	are
+10	CopulaPl	were
+10	CopulaBase	be
+
+# Progressive
+10	VerbIng	eating
+10	VerbIng	working
+10	VerbIng	sighing
+
+# Auxiliaries
+10	AuxSg	does
+10	AuxPl	do
+10	AuxPast	did
+10	AuxFut	will
+
+# Determiners
+50	DetAll	the
+25	DetSg	a
+10	DetSg	every
+# No specific plural determiners in original, but we can assume 'the' covers it.
+5	DetPl	all
+5	DetPl	many
+
+# Nouns
+# Singular
+20	NounSg	president
+20	NounSg	sandwich
+1	NounSg	pickle
+1	NounSg	chief of staff
+1	NounSg	floor
+10	NounSg	proposal
+10	NounSg	desk
+1	NounSg	Sally  # Allow "the lazy Sally"
+
+# Plural
+20	NounPl	presidents
+20	NounPl	sandwiches
+1	NounPl	pickles
+1	NounPl	chiefs of staff
+1	NounPl	floors
+10	NounPl	proposals
+10	NounPl	desks
+
+# Proper Nouns (Singular)
+20	ProperNoun	Sally
+
+# Adjectives
+1	Adj	fine
+1	Adj	delicious
+10	Adj	perplexed
+0.1	Adj	pickled
+10	Adj	lazy
+
+# Adverbs
+10	Adv	very
+
+# Prepositions
+1	Prep	with
+20	Prep	on
+1	Prep	under
+1	Prep	in
+1	Prep	of
+
+# Conjunctions
+10	Conj	and
+
+# Functional
+10	It	it
+10	That	that
