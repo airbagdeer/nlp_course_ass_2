@@ -99,6 +99,7 @@
 
 # Proper Nouns
 20	ProperNoun	Sally
+10	ProperNoun	sally
 
 # Adjectives
 1	Adj	fine
