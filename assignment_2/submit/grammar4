@@ -99,7 +99,7 @@
 # Singular NP
 20	NPSg	DetSg NounSg
 20	NPSg	DetAll NounSg
-10	NPSg	ProperNoun
+1	NPSg	ProperNoun
 2	NPSg	NPSg PP
 # 2	NPSg	NPSg Conj NPSg  # Removed: Sg and Sg = Pl
 

@@ -47,7 +47,7 @@
 1	VPing	VerbIng NP
 
 20	NP	Det Noun
-10	NP	ProperNoun
+1	NP	ProperNoun
 2	NP	NP PP
 2	NP	NP Conj NP
 
@@ -100,6 +100,7 @@
 # Proper Nouns
 20	ProperNoun	Sally
 10	ProperNoun	sally
+1	Noun	Sally
 
 # Adjectives
 1	Adj	fine
